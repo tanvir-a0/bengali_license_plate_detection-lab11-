@@ -8,7 +8,8 @@ from functions import extract_texts_from_cropped_images
 #     f.write("অসদফা\n8758 শি\n")
 
 
-current_data = "Vehicle62"
+current_data = "Vehicle643" 
+""
 list_of_images_that_can_be_licanse_plate = preprocessing_and_giving_me_cropped_images(
     f"data/{current_data}.jpg", 
     show_steps=True)

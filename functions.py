@@ -5,11 +5,13 @@ import pytesseract
 pytesseract.pytesseract.tesseract_cmd = r"C:\\Program Files\\Tesseract-OCR\\tesseract.exe"
 import re
 
-def show_image_with_scale(title, image, scale=1):
+def show_image_with_scale(title, image, scale=1, save = False):
     if scale != 1.0:
         width = int(image.shape[1] * scale)
         height = int(image.shape[0] * scale)
         image = cv2.resize(image, (width, height))
+    if save:
+        cv2.imwrite(f"screenshots\\{title}.png", image)
     cv2.imshow(title, image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
@@ -105,13 +107,16 @@ def preprocessing_and_giving_me_cropped_images(image_dir, show_steps = False):
 def extract_texts_from_cropped_images(list_of_images_that_can_be_licanse_plate, file_name = None, save_directory = None):
     for i, image in enumerate(list_of_images_that_can_be_licanse_plate):
         image = cv2.resize(image, None, fx=3, fy=3, interpolation=cv2.INTER_CUBIC)
+        show_image_with_scale(f'Cropped Image {i+1}', image)
 
         # Convert to grayscale
         gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        show_image_with_scale(f'Gray Image {i+1}', gray)
 
         # CLAHE to enhance local contrast
         clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8,8))
         gray = clahe.apply(gray)
+        show_image_with_scale(f'CLAHE Image {i+1}', gray)
 
         # Threshold (inverted to make text black if needed)
         _, thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
